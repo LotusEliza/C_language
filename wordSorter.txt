@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define STRING_LENGTH 21 * sizeof(char)
+
+int main(int argc, char *argv[])
+{
+    int n;
+    FILE * f;
+    scanf("%d", &n);
+    if (n == 0)
+    {
+        fprintf(stderr, "%s\n", "I can't allocate zero bytes =(");
+        exit(EXIT_FAILURE);
+    }
+
+    int len = n * sizeof(char*);
+    char ** m = (char**)malloc(len);
+    memset(m, 0, len);
+    int i = 0;
+    do
+    {
+        char * temp = (char*)malloc(STRING_LENGTH);
+        memset(temp, 0, STRING_LENGTH);
+        scanf("%s", temp);
+        m[i++] = temp;
+
+    } while (i < n);
+
+    printf("\n\n----------\n\n");
+
+    for (i=0; i<n; i++)
+    {
+        printf("%s\n", m[i]);
+    }
+    // sorting array
+    for (int i=0;i<n;i++)
+    {
+        for(int j=0;j<n-1;j++)
+        {
+            int res = strcmp(m[j],m[j+1]);
+            if(res>0)
+            {
+                char * tmp = m[j];
+                m[j]=m[j+1];
+                m[j+1]=tmp;
+            }
+        }
+    }
+    f = fopen("words.txt", "w");
+    if(f != NULL)
+    {
+        for(i = 0; i < n; i++)
+        {
+            char* str = m[i];
+            fputs(str, f);
+            fputs("\n", f);
+        }
+        fclose(f);
+    }
+
+
+    for (i=0; i<n; i++)
+    {
+        free(m[i]);
+    }
+    free(m);
+
+
+
+
+
+    return 0;
+}

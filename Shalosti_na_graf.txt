@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+enum WHO {
+    PETYA,
+    VASYA
+};
+
+const char *name(enum WHO number)
+{
+    return number == PETYA ? "Petr" : "Vasiliy";
+}
+
+int main(int argc, char *argv[])
+{
+    int x = 1;
+    enum WHO w = PETYA;
+    char *charts = (char*)malloc(4096);
+    char buf[1024] = {0};
+
+    srand(time(NULL));
+
+    //memset(charts, 0, 4096);
+    charts[0] = '\0'; // 'a', '3', '0' = 48, '\0' = 0
+    strcat(charts, "[[\"Who\", \"Agro\", \"Patience\"]");
+    // [ ["Who", "Agro"], ["Petr", 1], ["Vasily", 2], ["Petr", 4] .... ]
+    // ["%s", %d]
+    do {
+        printf("%s\tvybral ", name(w));
+        if (rand() % 2 == 0)
+        { // malenkaya
+            x += 1;
+            printf("malenkuyu\tshalost");
+        }
+        else
+        { // bolshaya
+            x *= 2;
+            printf("bolshuyu\tshalost");
+        }
+
+        sprintf(buf, ",[\"%s\", %d, %d]", name(w), x, 100 - x);
+        strcat(charts, buf);
+
+        if (x < 100)
+        switch (w) {
+        case PETYA:
+            w = VASYA;
+            break;
+        default:
+            w = PETYA;
+            break;
+        }
+        printf(" - x = %d\n", x);
+    } while (x<100);
+    strcat(charts, "]");
+    printf("po shee poluchil %s\n\n", name(w));
+    //puts(charts);
+
+
+    FILE *f = fopen("./agro.html", "w");
+    if (f != NULL)
+    {
+        fputs("<html><head><script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script><script type=\"text/javascript\">google.charts.load('current', {'packages':['corechart']});google.charts.setOnLoadCallback(drawChart);function drawChart() {var data = google.visualization.arrayToDataTable(", f);
+        fputs(charts, f);
+        fprintf(f, ");var options = {title: 'Agro metrics',hAxis: {title: 'Who',  titleTextStyle: {color: '#333'}},vAxis: {minValue: 0}};var chart = new google.visualization.LineChart(document.getElementById('chart_div'));chart.draw(data, options);}</script></head><body><div id=\"chart_div\" style=\"width: 100%%; height: 500px;\"></div><img src=\"%s.png\"></body></html>", name(w));
+        fclose(f);
+    }
+
+    free(charts);
+    return 0;
+}

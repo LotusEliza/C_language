@@ -1,0 +1,55 @@
+// ConsoleApplication2.cpp: определяет точку входа для консольного приложения.
+//
+
+
+#include "stdafx.h"
+#include <iostream>
+#include "m2d.h"
+
+using namespace std;
+
+const int CNT = 20;
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	
+	Circle m[CNT];
+
+	Circle c;
+	int rnd;
+	float c4, d4;
+
+	for (int i = 0; i < CNT; i++)
+	{
+		c.radius = rand() % (50 - 10 + 1) + 10;
+		do {
+			rnd = rand() % 20;
+		} while (rnd == 0);
+		c.radius += 1.0 / (float)rnd;
+
+		// CENTER POINT
+		c4 = (float)(rand() % 100);
+		do {
+			rnd = rand() % 20;
+		} while (rnd == 0);
+		d4 = 1.0 / (float)rnd + c.radius;
+		c.center.x = c4 + d4;
+		// coord Y
+		c4 = (float)(rand() % 100);
+		do {
+			rnd = rand() % 20;
+		} while (rnd == 0);
+		d4 = 1.0 / (float)rnd + c.radius;
+		c.center.y = c4 + d4;
+
+		m[i] = c;
+	}
+
+	for (int i = 0; i < CNT; i++) {
+		cout << m[i].center.x << ", " << m[i].center.y << ", " << m[i].radius << endl;
+	}
+
+
+	return 0;
+}
+

@@ -1,0 +1,54 @@
+// ConsoleApplication22.cpp : Defines the entry point for the console application.
+//
+
+#include <iostream>
+#include <cstdio>
+#include "stdafx.h"
+#include <string.h>
+#include <stdlib.h>
+
+using namespace std;
+
+void searchForLinks(char(&singleLine)[150])
+{
+		// What we need to find
+		char * linkStart = "<a";
+		char * linkEnd = ">";
+		// Where we'll place our found address
+		char *startOfLink;
+		char *endOfLink;
+
+
+		//Lets find First symbol of a link
+		startOfLink = strstr(singleLine, linkStart);
+	
+		//Lets find Last symbol of a link
+		endOfLink = strrchr(singleLine, '>');
+
+		//Now print out our links
+		if (endOfLink == NULL)
+			printf("");
+		else {
+			int start = atoi(startOfLink);
+			int end = atoi(endOfLink);
+			
+			for (int i = (startOfLink - singleLine); i < (endOfLink - singleLine + 1); i++)
+				printf("%c", singleLine[i]);
+		}
+		printf("\n");	
+}
+
+int main()
+{
+	FILE * fPointer = fopen("linkss.txt", "r");
+	printf("\nThe text contains following links:\n\n\n");
+	char singleLine[150];
+	while (!feof(fPointer)) {
+		fgets(singleLine, 150, fPointer);
+		searchForLinks(singleLine);
+	}
+	
+	fclose(fPointer);
+
+	return 0;
+}

@@ -1,0 +1,82 @@
+
+#include "stdafx.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+	int num = 5000;
+	float *arrayOfMen;
+	int i;
+	float lowest = 150.0;
+	float highest = 201.5;
+
+	int j, n;
+	float median, t;
+
+	//Allocate a memory
+	arrayOfMen = (float*)malloc(num * sizeof(float));
+
+	if (arrayOfMen == NULL)
+	{
+		printf("Error! memory not allocated.");
+		exit(0);
+	}
+
+	 //Generating random array elements
+	 for (i = 0; i < num; ++i) {
+		 float random = ((float)rand()) / (float)RAND_MAX;
+		 float diff = highest - lowest;
+		 float r = random * diff;
+		 arrayOfMen[i] = lowest + r;
+	 }
+
+	 FILE * File;
+	 File = fopen("text.txt", "w");
+
+	 //Print it out
+	fprintf(File, "____Not sorted List___\n");
+	for (i = 0; i < num; ++i) {
+		fprintf(File, "Element %d = %f\n", i, arrayOfMen[i]);
+	}
+
+	fprintf(File,"*************************\n");
+
+	//Sorting                                               
+		for (i = 0; i <= num - 1; i++)
+		{     /* Trip-i begins  */
+			for (j = 0; j <= num - i; j++)
+			{
+				if (arrayOfMen[j] <= arrayOfMen[j + 1])
+				{ /* Interchanging values */
+
+					t = arrayOfMen[j];
+					arrayOfMen[j] = arrayOfMen[j + 1];
+					arrayOfMen[j + 1] = t;
+				}
+				else
+					continue;
+			}
+		}
+
+		//Calculation of median
+		if (num % 2 == 0)
+			median = (arrayOfMen[num / 2] + arrayOfMen[num / 2 + 1]) / 2.0;
+		else
+			median = arrayOfMen[num / 2 + 1];
+
+		//Print out sorted list and median
+		fprintf(File,"_____Sorted List_____\n");
+		for (i = 0; i < num; i++)
+			fprintf(File,"Element %d = %f \n",i, arrayOfMen[i]);
+		fprintf(File,"\n\nMedian is %f\n", median);
+
+		fclose(File);
+		free(arrayOfMen);
+
+	return 0;
+}
+
+
+
+

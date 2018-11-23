@@ -1,0 +1,96 @@
+// ConsoleApplication2.cpp: определяет точку входа для консольного приложения.
+//
+
+
+#include "stdafx.h"
+
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+using namespace std;
+
+
+struct Point {
+	float x, y;
+};
+
+struct Circle {
+	Point center;
+	float radius;
+};
+
+typedef float Distance; // новое имя старому типу
+
+
+int myRand(int low, int high) {
+	int rnd = rand() % (high - low + 1) + low;
+	return rnd;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	srand(time(NULL));
+	
+	Point a;
+	Circle c;
+
+	float c4, d4;
+	int rnd;
+
+	// generate random float point!
+	// coord X
+	c4 = (float)(rand() % 100);
+	do {
+		rnd = rand() % 20;
+	} while (rnd == 0);
+	d4 = 1.0 / (float)rnd;
+	a.x = c4 + d4;
+	// coord Y
+	c4 = (float)(rand() % 100);
+	do {
+		rnd = rand() % 20;
+	} while (rnd == 0);
+	d4 = 1.0 / (float)rnd;
+	a.y = c4 + d4;
+	cout << "A(" << a.x << ", " << a.y << ")" << endl;
+	// printf(X: %f; Y: %f\n", a.x, a.y);
+	// generate random float point and radius for circle
+	// RADIUS
+	c.radius = myRand(10, 50);
+	do {
+		rnd = rand() % 20;
+	} while (rnd == 0);
+	c.radius += 1.0 / (float)rnd;
+
+	// CENTER POINT
+	c4 = (float)(rand() % 100);
+	do {
+		rnd = rand() % 20;
+	} while (rnd == 0);
+	d4 = 1.0 / (float)rnd + c.radius;
+	c.center.x = c4 + d4;
+	// coord Y
+	c4 = (float)(rand() % 100);
+	do {
+		rnd = rand() % 20;
+	} while (rnd == 0);
+	d4 = 1.0 / (float)rnd + c.radius;
+	c.center.y = c4 + d4;
+
+	cout << "Circle Center(" << c.center.x << ", " << c.center.y << ", " << c.radius <<  ")" << endl;
+
+	float px = powf(a.x - c.center.x, 2.0);
+	float py = powf(a.y - c.center.y, 2.0);
+	Distance d = sqrtf(px + py);
+
+	cout << "Distance: " << d << endl;
+
+	if (d < c.radius) {
+		cout << "IN" << endl;
+	}
+	else {
+		cout << "OUT" << endl;
+	}
+	return 0;
+}
+

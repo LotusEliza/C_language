@@ -1,0 +1,183 @@
+// Sorting.cpp : Defines the entry point for the console application.
+//
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <math.h>
+#include "stdafx.h"
+#include <time.h>
+#include<conio.h>
+#include <iostream>
+#include <fstream>
+#include <chrono>
+
+#ifdef _MSC_VER
+#define getch() 
+#endif
+
+using namespace std;
+
+typedef std::chrono::high_resolution_clock Clock;
+
+void quick_sort(int arr[], int, int);
+void bubble_sort(int arr[], int, int);
+void counting_sort(int arr[], int, int, int);
+
+//***************QUICK_SORT*********************
+
+void quick_sort(int arr[], int low, int high) {
+
+	int pivot, j, temp, i;
+
+	if (low < high) {
+		pivot = low;
+		i = low;
+		j = high;
+
+		while (i < j) {
+			while ((arr[i] <= arr[pivot]) && (i < high)) {
+				i++;
+			}
+			while (arr[j] > arr[pivot]) {
+				j--;
+			}
+			if (i < j) {
+				temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+		temp = arr[pivot];
+		arr[pivot] = arr[j];
+		arr[j] = temp;
+		quick_sort(arr, low, j - 1);
+		quick_sort(arr, j + 1, high);
+	}
+	/*printf("\nSorted List Quick Sorting\n");
+	for (i = 0; i<howMany; i++) {
+	printf("%d \n", arr[i]);
+	}*/
+}
+
+//**************BUBBLE_SORT**************************
+
+void bubble_sort(int arr[], int low, int howMany) {
+
+	int i, swapped;
+
+	while (1) {
+		swapped = 0;
+
+		//comparing each number to number after it
+		//last number won’t have a number after, so howMany -1
+
+		for (i = 0; i < howMany - 1; i++) {
+			//if first number bigger, swap them
+			if (arr[i] > arr[i + 1]) {
+				int temp = arr[i]; //we are going to replace it
+				arr[i] = arr[i + 1]; //replace first with second
+				arr[i + 1] = temp; //replace second with first
+				swapped = 1;
+			}
+		}
+
+		if (swapped == 0) {
+			break;
+		}
+	}
+	/*printf("\nSorted List Bubble Sorting\n");
+	for (i = 0; i<howMany; i++) {
+	printf("%d - %d \n", i, arr[i]);
+	}
+	printf("********************************");*/
+}
+//***************COUNTING_SORT*********************
+
+void counting_sort(int arr[], int k, int n, int range){
+
+	int i, j;
+	int * C = new int[range];
+	int * B = new int[n];
+
+	for (i = 0; i <= k; i++)
+		C[i] = 0;
+	for (j = 1; j <= n; j++)
+		C[arr[j]] = C[arr[j]] + 1;
+	for (i = 1; i <= k; i++)
+		C[i] = C[i] + C[i - 1];
+	for (j = n; j >= 1; j--){
+		B[C[arr[j]]] = arr[j];
+		C[arr[j]] = C[arr[j]] - 1;
+	}
+	/*printf("The Sorted array is : ");
+	for (i = 1; i <= n; i++)
+	printf("%d ", B[i]);*/
+}
+
+int main(){
+
+	int i, z, a, b, c;
+	int n = 10; //skolko elementov v massive
+	int range = 100;
+	int k = 0;
+	int howMany = 5;
+	char str1[1500];
+	char str[50000];
+
+	strcpy(str, "[[\'Array\', \'Quick\', \'Bubble\', \'Counting\']");
+	
+	for (z = 0; z < 3; z++) {
+
+	int * arr = new int[howMany];
+	if (arr == nullptr) {
+		printf("error assigning memory. Take measures.");
+	}
+
+	//create an array of random numbers
+	for (i = 0; i < howMany; i++) {
+		arr[i] = rand() % range + 1;
+	}
+
+	//*********Time_of_quick_sort
+	auto t1 = Clock::now();
+	quick_sort(arr, 0, howMany);
+	auto t2 = Clock::now();
+
+	//*********Time of Bubble Sort
+	auto t3 = Clock::now();
+	bubble_sort(arr, 0, howMany);
+	auto t4 = Clock::now();
+	
+	/**********Time of Counting Sort*/
+	auto t5 = Clock::now();
+	for (i = 1; i < howMany; i++){
+		arr[i] = rand() % range + 1;
+		if (arr[i] > k) {
+			k = arr[i];
+		}
+	}
+	counting_sort(arr, k, howMany - 1, range);
+	auto t6 = Clock::now();
+
+	a = (t2 - t1).count();
+	b = (t4 - t3).count();
+	c = (t6 - t5).count();
+	sprintf(str1, ",[\'%d\', %d, %d, %d\]", howMany, a, b, c);
+	strcat(str, str1);
+	howMany *= 5;
+	}
+
+	strcat(str, "]");
+
+	FILE * file_html = fopen("sorting.html", "w");
+	if (file_html != NULL)
+	{
+		fprintf(file_html, "<html><head><script type =\"text/javascript\" src = \"https://www.gstatic.com/charts/loader.js\"></script><script type =\"text/javascript\">google.charts.load('current',{'packages':['bar']});google.charts.setOnLoadCallback(drawChart);function drawChart(){var data = google.visualization.arrayToDataTable(");
+		fputs(str, file_html);
+		fprintf(file_html, ");var options = {chart:{title:'SPEED OF SORTING METHODS',subtitle:'Quick_Sort, Bubble_Sort, Counting_Sort: 5, 25, 125',}};var chart = new google.charts.Bar(document.getElementById('columnchart_material'));chart.draw(data, options);}</script></head><body><div id =\"columnchart_material\"style =\"width:900px;height:500px;\"></div></body></html>");
+		fclose(file_html);
+	}
+	/*free(str);*/
+return 0;
+}

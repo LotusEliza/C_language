@@ -1,0 +1,48 @@
+// ConsoleApplication2.cpp: определяет точку входа для консольного приложения.
+//
+
+
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+const int CNT = 20;
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	
+	unsigned int simples[CNT] = { 0 };
+	int scnt = 0;
+	bool isSimple;
+	int iterator = 0;
+	for (iterator = 1;; iterator++) {
+		isSimple = true;
+		// lets check for simplicity
+		for (int check = 2; check < iterator; check++) {
+			if (iterator % check == 0) {
+				isSimple = false;
+				break;
+			}
+		}
+		// end of check!
+		if (isSimple == true) {
+			simples[scnt++] = iterator;
+		}
+		if (scnt == CNT) {
+			break;
+		}
+	}
+	cout << iterator << endl;
+	/*
+	for (int i = 0; i < CNT; i++)
+	{
+		cout << i << " - " << simples[i] << endl;
+	}
+	*/
+
+
+
+	return 0;
+}
+
